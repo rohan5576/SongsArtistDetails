@@ -18,14 +18,37 @@ public class MainPresenter {
 
     public void performSearch(String searchTxt) {
         mainActivityView.showProgress();
-        apiClient = new ApiClient();
-        apiClient.getArtist(searchTxt);
-        apiClient.setServerResponseListener(response -> {
-            if (response instanceof ArtistsList) {
-                List<Artist> artistsList = ((ArtistsList) response).getResults().getArtistmatchs().getArtist();
-                mainActivityView.showList(artistsList);
-                mainActivityView.hideProgress();
-            }
-        });
+        apiClient.getArtist(searchTxt, new ApiClient.ServerResponseListener() {
+                    @Override
+                    public void onSuccessResponseReceived(Object response) {
+                        onSuccess(response);
+                    }
+
+                    @Override
+                    public void onErrorResponseReceived() {
+                        onError();
+                    }
+                }
+        );
+    }
+
+    /**
+     * OnSuccess Response
+     *
+     * @param response Response object
+     */
+    protected void onSuccess(Object response) {
+        if (response instanceof ArtistsList) {
+            List<Artist> artistsList = ((ArtistsList) response).getResults().getArtistmatchs().getArtist();
+            mainActivityView.showList(artistsList);
+        }
+        mainActivityView.hideProgress();
+    }
+
+    /**
+     * Error Code Data.
+     */
+    protected void onError() {
+        mainActivityView.hideProgress();
     }
 }

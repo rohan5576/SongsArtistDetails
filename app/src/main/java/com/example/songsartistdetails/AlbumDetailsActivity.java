@@ -26,6 +26,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.example.songsartistdetails.service.ApiClient.getAPIClientInstance;
+
 
 public class AlbumDetailsActivity extends AppCompatActivity implements AlbumDetailActivityView {
 
@@ -60,7 +62,7 @@ public class AlbumDetailsActivity extends AppCompatActivity implements AlbumDeta
 
     private void initView() {
         progressdialog = new ProgressDialog(this);
-        albumDetailPresenter = new AlbumDetailPresenter(this);
+        albumDetailPresenter = new AlbumDetailPresenter(this,getAPIClientInstance());
         tracksRV.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false));
         tracksRV.setHasFixedSize(true);

@@ -53,7 +53,7 @@ public class AlbumActivity extends AppCompatActivity implements AlbumActivityVie
         artistNameTV.setText(getIntent().getStringExtra(Constants.ARTIST_NAME));
         topAlbumRV.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false));
-        albumPresenter = new AlbumPresenter(this);
+        albumPresenter = new AlbumPresenter(this, ApiClient.getAPIClientInstance());
     }
 
 

@@ -16,15 +16,24 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiClient {
     private static Retrofit retrofit = null;
     private static String TAG = "ApiClient";
+    private static ApiClient INSTANCE = null;
 
-    public void setServerResponseListener(ServerResponseListener serverResponseListener) {
-        this.serverResponseListener = serverResponseListener;
-    }
-
-    ServerResponseListener serverResponseListener;
 
     public interface ServerResponseListener {
-        void onResponseReceived(Object response);
+        void onSuccessResponseReceived(Object response);
+        void onErrorResponseReceived();
+    }
+
+    /**
+     * Api Client instance.
+     *
+     * @return api instance.
+     */
+    public static ApiClient getAPIClientInstance() {
+        if (INSTANCE == null) {
+            return new ApiClient();
+        }
+        return INSTANCE;
     }
 
     /**
@@ -47,16 +56,17 @@ public class ApiClient {
      *
      * @param searchTxt Search text
      */
-    public void getArtist(String searchTxt) {
+    public void getArtist(String searchTxt, ServerResponseListener serverResponseListener) {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
         Call<ArtistsList> call = apiService.getArtist(searchTxt, Constants.LIMIT, Constants.API_KEY);
         call.enqueue(new Callback<ArtistsList>() {
             @Override
             public void onResponse(Call<ArtistsList> call, Response<ArtistsList> response) {
-                serverResponseListener.onResponseReceived(response.body());
+                serverResponseListener.onSuccessResponseReceived(response.body());
             }
             @Override
             public void onFailure(Call<ArtistsList> call, Throwable t) {
+                serverResponseListener.onErrorResponseReceived();
                 Log.e(TAG, t.getMessage());
             }
         });
@@ -68,18 +78,19 @@ public class ApiClient {
      * @param artistName Artist Name.
      * @param albumName  Artist AlbumName Name.
      */
-    public void getAlbumDetails(String artistName, final String albumName) {
+    public void getAlbumDetails(String artistName, final String albumName, ServerResponseListener serverResponseListener) {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
 
         Call<AlbumMatch> call = apiService.getAlbumDetails(artistName, albumName, Constants.API_KEY);
         call.enqueue(new Callback<AlbumMatch>() {
             @Override
             public void onResponse(Call<AlbumMatch> call, Response<AlbumMatch> response) {
-                serverResponseListener.onResponseReceived(response.body());
+                serverResponseListener.onSuccessResponseReceived(response.body());
             }
 
             @Override
             public void onFailure(Call<AlbumMatch> call, Throwable t) {
+                serverResponseListener.onErrorResponseReceived();
                 Log.e(TAG, t.getMessage());
             }
         });
@@ -91,16 +102,17 @@ public class ApiClient {
      *
      * @param artistName Artist Name.
      */
-    public void getArtistTopAlbums(String artistName) {
+    public void getArtistTopAlbums(String artistName, ServerResponseListener serverResponseListener) {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
         Call<AlbumsList> call = apiService.getTopAlbums(artistName, Constants.API_KEY);
         call.enqueue(new Callback<AlbumsList>() {
             @Override
             public void onResponse(Call<AlbumsList> call, Response<AlbumsList> response) {
-                serverResponseListener.onResponseReceived(response.body());
+                serverResponseListener.onSuccessResponseReceived(response.body());
             }
             @Override
             public void onFailure(Call<AlbumsList> call, Throwable t) {
+                serverResponseListener.onErrorResponseReceived();
                 Log.e(TAG, t.getMessage());
             }
         });

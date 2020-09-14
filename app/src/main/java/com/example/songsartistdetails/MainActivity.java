@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.songsartistdetails.adapter.ArtistAdapter;
 import com.example.songsartistdetails.model.Artist;
 import com.example.songsartistdetails.presenter.MainPresenter;
-import com.example.songsartistdetails.service.ApiClient;
 import com.example.songsartistdetails.view.MainActivityView;
 
 import java.util.List;
@@ -21,6 +20,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
+
+import static com.example.songsartistdetails.service.ApiClient.getAPIClientInstance;
 
 public class MainActivity extends AppCompatActivity implements MainActivityView {
     @BindView(R.id.search_ET)
@@ -44,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
      */
     private void initView() {
         progressdialog = new ProgressDialog(this);
-        mainPresenter = new MainPresenter(this, new ApiClient());
+        mainPresenter = new MainPresenter(this, getAPIClientInstance());
         artistSearchRV.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false));
     }
